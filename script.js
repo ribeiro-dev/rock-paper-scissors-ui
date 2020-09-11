@@ -18,7 +18,6 @@ function playRound(playerSelection, computerSelection) {
         playerWins: false,
         draw: false,
         message: "",
-        error: null
     }
     
     // If player chooses rock
@@ -79,48 +78,35 @@ function playRound(playerSelection, computerSelection) {
             return returnInfo
         }
     }
-
-    // If user inputs an wrong answer
-    else {
-        returnInfo.error = true
-        alert("Invalid answer! Try again")
-        return returnInfo
-    }
 }
 
-function game() {
-    let score = {
-        player: 0,
-        computer: 0
-    }
-
-    for (let i = 0; i < 5; i++) {
-        let player = prompt("Choose rock, paper or scissors")
-        let cpu = computerPlay()        
-        let result = playRound(player, cpu)
-
-        if (result.error) continue
-
-        if (!result.draw) {
-            if (result.playerWins) score.player++
-            if (!result.playerWins) score.computer++
-        }
-        console.log(result.message)
-    }
-
-    // Show the winner
-    if (score.player > score.computer) {
-        console.log("You are the winner!")
-    } else {
-        console.log("You lose!")
-    }
-
-    console.log(`SCORE: ${score.player} x ${score.computer}`)
+let score = {
+    player: 0,
+    computer: 0
 }
 
+function changeScore(roundInfo) {
+
+    //console.log(roundInfo)
+    if (roundInfo.playerWins) {
+        let playerScore = document.querySelector('#player')
+        playerScore.innerHTML = `You: ${++score.player}`
+
+    } else if (!roundInfo.playerWins) {
+        let computerScore = document.querySelector('#computer')
+        computerScore.innerHTML = `Computer: ${++score.computer}`
+    }
+    
+
+    
+}
 
 
 const playButtons = document.querySelectorAll('.btn-play')
 playButtons.forEach( btn => btn.addEventListener('click', (e) => {
-    // call playRound()
+
+    let selectedOption = e.target.innerText
+    let computerOption = computerPlay()
+    let result = playRound(selectedOption, computerOption)
+    changeScore(result)
 }))
