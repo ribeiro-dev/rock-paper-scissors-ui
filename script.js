@@ -16,7 +16,7 @@ function playRound(playerSelection, computerSelection) {
 
     let returnInfo = {
         playerWins: false,
-        draw: false,
+        tie: false,
         message: "",
     }
     
@@ -33,8 +33,8 @@ function playRound(playerSelection, computerSelection) {
             return returnInfo
 
         } else if (computerSelection === playerSelection) {
-            returnInfo.draw = true
-            returnInfo.message = "It's a tie!"
+            returnInfo.tie = true
+            returnInfo.message = "It's a tie! Try again!"
             return returnInfo
         }
     }
@@ -53,8 +53,8 @@ function playRound(playerSelection, computerSelection) {
             return returnInfo
      
         } else if (computerSelection === playerSelection) {
-            returnInfo.draw = true
-            returnInfo.message = "It's a tie!"
+            returnInfo.tie = true
+            returnInfo.message = "It's a tie! Try again!"
             return returnInfo
         }
     }
@@ -73,8 +73,8 @@ function playRound(playerSelection, computerSelection) {
             return returnInfo
 
         } else if (computerSelection === playerSelection) {
-            returnInfo.draw = true
-            returnInfo.message = "It's a tie!"
+            returnInfo.tie = true
+            returnInfo.message = "It's a tie! Try again"
             return returnInfo
         }
     }
@@ -82,31 +82,58 @@ function playRound(playerSelection, computerSelection) {
 
 let score = {
     player: 0,
-    computer: 0
+    computer: 0,
+    tie: 0
 }
 
 function changeScore(roundInfo) {
 
     //console.log(roundInfo)
+    let messageDiv = document.querySelector('#message')
+    messageDiv.textContent = roundInfo.message
+
     if (roundInfo.playerWins) {
         let playerScore = document.querySelector('#player')
-        playerScore.innerHTML = `You: ${++score.player}`
+        playerScore.textContent = `You: ${++score.player}`
 
     } else if (!roundInfo.playerWins) {
-        let computerScore = document.querySelector('#computer')
-        computerScore.innerHTML = `Computer: ${++score.computer}`
+        if (roundInfo.tie) {
+            let tieScore = document.querySelector('#tie')
+            //tieScore.textContent = `Tie: ${++score.tie}`
+
+        } else {
+            let computerScore = document.querySelector('#computer')
+            computerScore.textContent = `Computer: ${++score.computer}`
+        }
+    }
+}
+
+function finishGame() {    
+    
+    let messageDiv = document.querySelector('#message')
+    if (score.player === 5) {
+        // YOU WIN 
+        messageDiv.textContent = 'You are the winner!'
+        playButtons.forEach( btn => btn.disabled = true)
+        
+    } else if (score.computer === 5) {
+        // YOU LOSE
+        messageDiv.textContent = 'The computer is the winner!'
+        playButtons.forEach( btn => btn.disabled = true)
     }
     
 
-    
+    // CREATE A BUTTON TO START A NEW GAME
 }
 
-
-const playButtons = document.querySelectorAll('.btn-play')
-playButtons.forEach( btn => btn.addEventListener('click', (e) => {
-
+function playGame(e) {
     let selectedOption = e.target.innerText
     let computerOption = computerPlay()
     let result = playRound(selectedOption, computerOption)
     changeScore(result)
-}))
+    finishGame()
+}
+
+
+const playButtons = document.querySelectorAll('.btn-play')
+playButtons.forEach( btn => btn.addEventListener('click', playGame))
